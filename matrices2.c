@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <time.h>
 
 void llenar(int rows, int cols, int ** mt){
 	for (int i=0; i<rows; i++){
@@ -33,6 +33,10 @@ void multiplicacion(int rows, int cols, int **mt1, int **mt2, int **mt3){
 
 int main(int argc, char *argv[]){
 	if (argc==3){
+
+		double total_time;
+		clock_t start, end;
+
 		int num_row= atoi(argv[1]);
 		int num_col= atoi(argv[2]);
 
@@ -49,11 +53,12 @@ int main(int argc, char *argv[]){
 		}
 		llenar(num_row, num_col, mt1);
 		llenar(num_row, num_col, mt2);
-		imprimir(num_row, num_col, mt1);
-		imprimir(num_row, num_col, mt2); 
+
+		start= clock();
 		multiplicacion(num_row, num_col, mt1, mt2, mt3);
-		imprimir(num_row, num_col, mt3);
-		printf("fin");
+		end=clock();
+		total_time= ((double) (end-start))/	1000;
+		printf("%d\t%.3f\n", atoi(argv[1]), total_time);
 
 		
 	}
