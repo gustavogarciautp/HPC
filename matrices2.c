@@ -57,9 +57,11 @@ int main(int argc, char *argv[]){
 		start= clock();
 		multiplicacion(num_row, num_col, mt1, mt2, mt3);
 		end=clock();
-		total_time= ((double) (end-start))/	1000;
+		total_time= ((double) (end-start))/	CLOCKS_PER_SEC;
 		printf("%d\t%.3f\n", atoi(argv[1]), total_time);
-
+		free(mt1);
+		free(mt2);
+		free(mt3);
 		
 	}
 	else{

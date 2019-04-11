@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <time.h>
 
 struct thread_data
 {
@@ -12,7 +13,7 @@ struct thread_data
 void llenar(int rows, int cols, int ** mt){
 	for (int i=0; i<rows; i++){
 		for (int j=0; j< cols; j++){
-			mt[i][j]= rand() % (6);  // de 0 a 20
+			mt[i][j]= rand() % (20);  // de 0 a 20
 		}			
 	}
 }
@@ -24,13 +25,12 @@ void imprimir(int rows, int cols, int **mt){
 			printf("%i\t", mt[i][j]);
 		}			
 	}
-	printf("\n");
+	printf("\n------------------------------------------------------------------------------------------------------------------\n");
 }
 
 void * multiplicacion(void *threadarg){
 	int rows, cols,ini_cols;
 	struct thread_data *my_data;
-
    	my_data = (struct thread_data *) threadarg;
 	rows= my_data->rows;
 	cols= my_data->cols;
@@ -39,7 +39,7 @@ void * multiplicacion(void *threadarg){
 	int **mt2= my_data->mt2;
 	int **mt3= my_data->mt3;
 
-	printf("ini_cols %i ini_cols+cols %i \n", ini_cols, ini_cols+cols);
+	//printf("ini_cols %i ini_cols+cols %i \n", ini_cols, ini_cols+cols);
 
 	for (int i=0; i<rows; i++){
 		for (int j=ini_cols; j< (ini_cols+cols); j++){
@@ -60,6 +60,9 @@ int main(int argc, char *argv[]){
 
 		int **mt1, **mt2, **mt3;
 
+		double total_time;
+		clock_t start, end;
+
 		mt1=(int **)malloc(sizeof(int *)*num_row); //Reservar memoria para filas
 		mt2=(int **)malloc(sizeof(int *)*num_row);
 		mt3=(int **)malloc(sizeof(int *)*num_row);
@@ -70,8 +73,8 @@ int main(int argc, char *argv[]){
 		}
 		llenar(num_row, num_col, mt1);
 		llenar(num_row, num_col, mt2);
-		imprimir(num_row, num_col, mt1);
-		imprimir(num_row, num_col, mt2); 
+		//imprimir(num_row, num_col, mt1);
+		//imprimir(num_row, num_col, mt2); 
 		
 		pthread_t threads[NUM_THREADS];
 		int rc, t, cols;
@@ -86,7 +89,7 @@ int main(int argc, char *argv[]){
 
 		
 		for(t=0;t<NUM_THREADS;t++) {
-		  printf("Creating thread %d\n", t);
+		  //printf("Creating thread %d\n", t);
 		
 		  thread_data_array[t].rows = num_row;
 
@@ -105,14 +108,28 @@ int main(int argc, char *argv[]){
 		  thread_data_array[t].mt1 = mt1;
 		  thread_data_array[t].mt2 = mt2;
 		  thread_data_array[t].mt3 = mt3;
+		}
+		start= clock();
+		for (t=0; t< NUM_THREADS; t++){
 		  rc = pthread_create(&threads[t], NULL, multiplicacion, (void *) &thread_data_array[t]);
 		  if (rc) {
-		    printf("ERROR; return code from pthread_create() is %d\n", rc);
+		    //printf("ERROR; return code from pthread_create() is %d\n", rc);
 		    exit(-1);
 		    }
 		  }
-		
-		imprimir(num_row, num_col, mt3);
+		//imprimir(num_row, num_col, mt3);
+		//printf("hola2");
+		for (int i=0; i< NUM_THREADS; i++){
+			pthread_join (threads[i], NULL );
+		}
+		end= clock();
+		total_time= ((double) (end-start))/	CLOCKS_PER_SEC;
+		printf("%d\t%.3f\n", atoi(argv[1]), total_time);
+		//imprimir(num_row, num_col, mt3);
+		//printf("hola1");
+		free(mt1);
+		free(mt2);
+		free(mt3);
 	}
 	else{
 		printf("El numero de argumentos es incorrecto");

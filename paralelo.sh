@@ -4,6 +4,6 @@ for j in {1..10}
 do
 for i in 10 100 1000
 do
-./matrices2.o $i $i >> resultado.txt
+./hilos.o $i $i 10 >> resultado2.txt
 done
 done
