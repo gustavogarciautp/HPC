@@ -4,10 +4,11 @@
 #include <math.h>
 #include <time.h>
 
+int  **mt1, **mt2, **mt3;
+
 struct thread_data
 {
    int	rows, cols, ini_cols;
-   int **mt1, **mt2, **mt3;
 };
 
 void llenar(int rows, int cols, int ** mt){
@@ -35,9 +36,6 @@ void * multiplicacion(void *threadarg){
 	rows= my_data->rows;
 	cols= my_data->cols;
 	ini_cols= my_data->ini_cols;
-	int **mt1= my_data->mt1;
-	int **mt2= my_data->mt2;
-	int **mt3= my_data->mt3;
 
 	//printf("ini_cols %i ini_cols+cols %i \n", ini_cols, ini_cols+cols);
 
@@ -57,8 +55,6 @@ int main(int argc, char *argv[]){
 		int num_row= atoi(argv[1]);
 		int num_col= atoi(argv[2]);
 		int NUM_THREADS= atoi(argv[3]);
-
-		int **mt1, **mt2, **mt3;
 
 		double total_time;
 		clock_t start, end;
@@ -105,9 +101,6 @@ int main(int argc, char *argv[]){
 			  	thread_data_array[t].cols = cols;
 			}
 			//printf("hilos %i res_cols %i sum_cols %i\n", NUM_THREADS, res_cols, sum_cols);
-		  thread_data_array[t].mt1 = mt1;
-		  thread_data_array[t].mt2 = mt2;
-		  thread_data_array[t].mt3 = mt3;
 		}
 		start= clock();
 		for (t=0; t< NUM_THREADS; t++){
